@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Bastian Reiter/Daniel Maier">
+
+<title>Explore DataSHIELD and CCPhos on your local machine</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="main_document_files/libs/clipboard/clipboard.min.js"></script>
+<script src="main_document_files/libs/quarto-html/quarto.js"></script>
+<script src="main_document_files/libs/quarto-html/popper.min.js"></script>
+<script src="main_document_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="main_document_files/libs/quarto-html/anchor.min.js"></script>
+<link href="main_document_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="main_document_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="main_document_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="main_document_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="main_document_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Explore DataSHIELD and CCPhos on your local machine</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Bastian Reiter/Daniel Maier </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<style type="text/css">
+p {
+  text-align: justify
+}
+</style>
+</div>
+<section id="introduction-to-the-dktks-ccp-and-the-purpose-of-ccphos" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-to-the-dktks-ccp-and-the-purpose-of-ccphos">Introduction to the DKTK’s CCP and the purpose of CCPhos</h2>
+<p>The German Cancer Consortium’s (DKTK) Clinical Communication Platform is a federated system of cancer-center-based data warehouses with highly sensitive clinical, patient-centered real-world data (RWD). The CCP’s federated infrastructure guarantees a maximum level of data security and data sovereignty for the participating medical centers. While originally designed to recruit patients for clinical trials, a recently published paper demonstrates the potential of the CCP’s RWD for clinical oncological research.</p>
+<p>To establish secure, fast, and scalable federated data analysis, a DataSHIELD-compliant infrastructure has been installed in the CCP network. With CCPhos (The CCP’s approach to handling oncological RWD sets), we present a user-centered, comprehensive solution for the challenges in pre-analytic data preparation (i.e.&nbsp;harmonization, augmentation), exploration, and analysis.</p>
+<p>The CCP’s data model forms a subset of the oncologic base data set (oBDS) jointly developed by the Association of German Tumor Centers (Arbeitsgemeinschaft Deutscher Tumorzentren) and the Association of Epidemiologic Cancer Registries in Germany (Gesellschaft der epidemiologischen Krebsregister in Deutschland e.V.). As the data collection is conducted by trained cancer registrars within the participation cancer centers, the data is already in a well harmonized state. However, multiple minor inconsistencies remain, bearing a high risk to cumulate and result in invalid and biased statistical analyses.</p>
+<p>Furthermore, using data augmentation through feature engineering and machine learning algorithms, the full potential of the data could be leveraged. Both aspects are addressed by the functionality implemented in the CCPhos framework. The CCPhos suite consists of two closely interlinked R-packages (dsCCPhos and dsCCPhosClient) and a complementary R Shiny application that aims to facilitate their usage for researchers (CCPhosApp).</p>
+<p>Incorporating DataSHIELD’s interface technology (DSI package), data processing functions are called from an arbitrary client system within the network and are executed on remote servers of the participating sites. The proposed functionality entails the following key features: 1) Checking of technical requirements on connected servers; 2) Customizable and traceable data transformation; 3) Data curation; 4) Data augmentation and 5) Exploratory analytics.</p>
+<p>The overarching goal is to provide researchers with a comprehensive set of tools to obtain valid and conclusive ready-for-analysis data while offering maximum of flexibility and transparency in the way these data are obtained.</p>
+</section>
+<section id="scope-of-this-tutorial" class="level2">
+<h2 class="anchored" data-anchor-id="scope-of-this-tutorial">Scope of this tutorial</h2>
+<p>As stated above, CCPhos entails three packages: dsCCPhos, dsCCPhosClient and CCPhosApp. All of them are functional but still under development. Throughout this tutorial we concentrate on using CCPhos without the app. However, you are encouraged to check out the app, which is meant to facilitate the underlying packages’ functionality. Scroll to the end of this page to see how the app can be executed.</p>
+<p>The first step in this tutorial is to create a virtual DataSHIELD infrastructure on your local machine. This infrastructure will be used to test DataSHIELD and CCPhos, and is meant to make yourself comfortable with the analytic environment. DataSHIELD consists of multiple server-side sessions that are connected to a client-side session. The client-side session is used to control the server-side sessions and to execute the analysis whereas the server-side sessions are used to store the data and to execute the analysis in a distributed manner. The virtual DataSHIELD infrastructure is created using the ‘DSLite’ package.</p>
+</section>
+<section id="install-required-packages" class="level2">
+<h2 class="anchored" data-anchor-id="install-required-packages">Install Required Packages</h2>
+<p>First, we need to install the required packages. The ‘devtools’ package is required to install packages from GitHub. The ‘dsBaseClient’ package is required to interact with the DataSHIELD infrastructure. The ‘dsCCPhos’ and ‘dsCCPhosClient’ packages are required to perform data curation and data augmentation tasks. The ‘CCPhosApp’ package is required to use the CCPhos App. The ‘DSLite’ package is required to set up the virtual DataSHIELD infrastructure.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install required packages</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"devtools"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"DSLite"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#install DataSHIELD packages</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">'dsBase'</span>, <span class="at">repos=</span><span class="fu">c</span>(<span class="fu">getOption</span>(<span class="st">'repos'</span>), <span class="st">'http://cran.datashield.org'</span>), <span class="at">dependencies=</span><span class="cn">TRUE</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">'dsBaseClient'</span>, <span class="at">repos=</span><span class="fu">c</span>(<span class="fu">getOption</span>(<span class="st">'repos'</span>), <span class="st">'http://cran.datashield.org'</span>), <span class="at">dependencies=</span><span class="cn">TRUE</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Install CCPhos packages from GitHub</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="at">repo =</span> <span class="st">"Appsilon/shiny.worker"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="at">repo =</span> <span class="st">"BastianReiter/dsCCPhos"</span>, <span class="at">ref =</span> <span class="st">"DevDaniel"</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="at">repo =</span> <span class="st">"BastianReiter/dsCCPhosClient"</span>, <span class="at">ref =</span> <span class="st">"DevDaniel"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="at">repo =</span> <span class="st">"BastianReiter/CCPhosApp"</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required packages</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsBase)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsBaseClient)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsCCPhos)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsCCPhosClient)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(CCPhosApp)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DSLite)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="initiate-virtual-ccp-infrastructure-with-provided-test-data" class="level2">
+<h2 class="anchored" data-anchor-id="initiate-virtual-ccp-infrastructure-with-provided-test-data">Initiate virtual CCP infrastructure with provided test data</h2>
+<p>For the purposes of this tutorial, we will work within a “virtual” CCP environment, initiated by a function contained in the dsCCPhosClient package. Test data will be provided to you and must be stored within a folder named “data” located in this project’s root directory.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load test data object</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>TestData <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"data/CCPTestData.rds"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># The following function call sets up virtual servers (using functionality of the DSLite-package) </span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># and equips them with evenly distributed data sampled from the 'TestData' object. Using according </span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># arguments you can customize the number of sites and patients per site and even optionally add </span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># custom or community DataSHIELD packages to the virtual servers.</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>CCPConnections <span class="ot">&lt;-</span> dsCCPhosClient<span class="sc">::</span><span class="fu">ConnectToVirtualCCP</span>(<span class="at">CCPTestData =</span> TestData, </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">NumberOfSites =</span> <span class="dv">3</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">NumberOfPatientsPerSite =</span> <span class="dv">10000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="check-available-methods-and-package-status" class="level2">
+<h2 class="anchored" data-anchor-id="check-available-methods-and-package-status">Check Available Methods and Package Status</h2>
+<p>In the next step, we will check the available methods and the status of the packages on the server-side sessions to ensure that the DataSHIELD infrastructure is set up correctly. To ensure consistency, it is crucial to verify that all required packages are installed on the server-side sessions. Additionally, all methods and packages should be available in the same version across all servers.</p>
+<p>The first call (A) is a convenience function within the dsCCPhosClient package. It stores receiving messages from the servers in an object called <code>Messages</code>. Via this object access to view available methods and check package status on the server side is possible. The second set of calls (B) is a more ‘manual’ approach, using functions from the DSI package to achieve the same goal, i.e.&nbsp;checking available methods and package status.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A) Convenience function within dsCCPhosClient</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>Messages <span class="ot">&lt;-</span> <span class="fu">CheckServerRequirements</span>(<span class="at">DataSources =</span> CCPConnections)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># B) 'Manual' approach featuring functions from DSI package</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># List available AGGREGATE functions</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>DSI<span class="sc">::</span><span class="fu">datashield.method_status</span>(<span class="at">conns =</span> CCPConnections,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                              <span class="at">type =</span> <span class="st">"aggregate"</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># List available ASSIGN functions</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>DSI<span class="sc">::</span><span class="fu">datashield.method_status</span>(<span class="at">conns =</span> CCPConnections,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                              <span class="at">type =</span> <span class="st">"assign"</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Get info about installed packages on servers</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>DSI<span class="sc">::</span><span class="fu">datashield.pkg_status</span>(<span class="at">conns =</span> CCPConnections)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="load-data-in-server-side-sessions" class="level2">
+<h2 class="anchored" data-anchor-id="load-data-in-server-side-sessions">Load Data in Server-Side Sessions</h2>
+<p>Until now, we have loaded the data set into the client-side session and distributed it to the virtual servers. That means the data set is now accessible from the server side sessions. However, this does not mean the data is already loaded into the server-side sessions. To do so, we need to first ensure the tables from the data repository are accessible within the R session. We will verify that all tables are accessible on all servers and then proceed to load them into the R session. We will consolidate all raw data tables in one list object called <code>RawDataSet</code>. This object will be used to access the data in the server-side sessions.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convenience function within dsCCPhosClient</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Messages <span class="ot">&lt;-</span> <span class="fu">LoadRawDataSet</span>(<span class="at">CCPSiteSpecifications =</span> <span class="cn">NULL</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                           <span class="at">DataSources =</span> CCPConnections)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="ready-to-work-with-datashield" class="level2">
+<h2 class="anchored" data-anchor-id="ready-to-work-with-datashield">Ready to Work with DataSHIELD</h2>
+<p>Now that we have set up the virtual DataSHIELD infrastructure and loaded the test data set into the server-side sessions, we are ready to work with DataSHIELD. We can use specific DataSHIELD functions (from the <code>dsBaseClient</code>-package) to verify that everything is working correctly. To illustrate, we can pursue checking the names of the data sets, the column names of the data sets, the class of the data sets, and the class of the columns in the data sets.</p>
+<p>It is important to know that the data set is stored in a list object called <code>RawDataSet</code>. This object contains all data frames that are part of the data set. The data frames are stored in the list object in the same way as they are stored in the data repository. For example, the data frame <code>RDS_Patient</code> is stored in the list object as <code>RawDataSet$RDS_Patient</code>, while the data frame <code>RDS_Diagnosis</code> is stored in the list object as <code>RawDataSet$RDS_Diagnosis</code>. In the following, we will use several dsBaseClient functions to check if everything is working correctly.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's use some functions from the dsBaseClient-package to check if everything is working</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the names of all elements (data frames) within list 'RawDataSet'</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>dsBaseClient<span class="sc">::</span><span class="fu">ds.names</span>(<span class="st">"RawDataSet"</span>, <span class="at">datasources =</span> CCPConnections)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the column names of data frame 'RDS_Patient' within list 'RawDataSet'</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>dsBaseClient<span class="sc">::</span><span class="fu">ds.colnames</span>(<span class="st">"RawDataSet$RDS_Patient"</span>, <span class="at">datasources =</span> CCPConnections)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the class of the 'RDS_Patient' data frame</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>dsBaseClient<span class="sc">::</span><span class="fu">ds.class</span>(<span class="st">"RawDataSet$RDS_Patient"</span>, <span class="at">datasources =</span> CCPConnections)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the class of the column 'vitalstatus' in 'RDS_Patient'</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>dsBaseClient<span class="sc">::</span><span class="fu">ds.class</span>(<span class="st">"RawDataSet$RDS_Patient$vitalstatus"</span>, <span class="at">datasources =</span> CCPConnections)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the distribution of 'geschlecht' in 'RDS_Patient'</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>dsBaseClient<span class="sc">::</span><span class="fu">ds.table</span>(<span class="st">"RawDataSet$RDS_Patient$geschlecht"</span>, <span class="at">datasources =</span> CCPConnections)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the distribution of 'vitalstatus' in 'RDS_Patient'</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>dsBaseClient<span class="sc">::</span><span class="fu">ds.table</span>(<span class="st">"RawDataSet$RDS_Patient$vitalstatus"</span>, <span class="at">datasources =</span> CCPConnections)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="get-overview-of-objects-in-server-workspaces" class="level2">
+<h2 class="anchored" data-anchor-id="get-overview-of-objects-in-server-workspaces">Get Overview of Objects in Server Workspaces</h2>
+<p>Now that the data is loaded into the server-side sessions, we can get an overview of the objects in the server workspaces. We can use the <code>GetServerWorkspaceInfo</code> function from the <code>dsCCPhosClient</code>-package to get an overview of the objects in the server workspaces. The function returns a list object that contains information about all objects in the server workspaces. Most importantly, the <code>overview</code> data frame in the list contains information about the object name, the object type, the object size, the object class, and the object attributes.</p>
+<p>For individual objects, we can use the <code>GetObjectMetaData</code> function from the <code>dsCCPhosClient</code>-package to get detailed meta data of a particular object. The function returns a list object that contains information about the object’s structure, the object’s data types, the object’s value sets, and the object’s value set sizes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Collect comprehensive information about all workspace objects</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># !!D: deprecated function; </span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>ServerWorkspaceInfo <span class="ot">&lt;-</span> dsCCPhosClient<span class="sc">::</span><span class="fu">GetServerWorkspaceInfo</span>(<span class="at">DataSources =</span> CCPConnections)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Overview of all objects in server R sessions</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(ServerWorkspaceInfo<span class="sc">$</span>Overview)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Detailed meta data of a particular object (also part of ServerWorkspaceInfo)</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>ObjectMetaData <span class="ot">&lt;-</span> <span class="fu">ds.GetObjectMetaData</span>(<span class="at">ObjectName =</span> <span class="st">"RDS_Patient"</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">DataSources =</span> CCPConnections)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Explore Object meta data: Structural overview</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(ObjectMetaData<span class="sc">$</span>FirstEligible<span class="sc">$</span>Structure)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Get type of feature 'geburtsdatum'</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>ObjectMetaData<span class="sc">$</span>FirstEligible<span class="sc">$</span>DataTypes[<span class="st">"geburtsdatum"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="performing-data-pre-processing-tasks-with-ccphos" class="level2">
+<h2 class="anchored" data-anchor-id="performing-data-pre-processing-tasks-with-ccphos">Performing data (pre-)processing tasks with CCPhos</h2>
+<section id="data-curation" class="level3">
+<h3 class="anchored" data-anchor-id="data-curation">Data curation</h3>
+<p>The provided test data simulates RWD from tumor documentations that are part of the CCP. Consequently, it also features common structural and semantic inconsistencies that require processing to reduce potential bias and enable meaningful and correct analyses. In addition, syntactic and semantic data harmonization tasks need to be performed and monitored at the same time to prevent processing-induced bias. CCPhos provides functionality to meet these challenges.</p>
+<p>Here are some examples of inconsistencies listed that have to be dealt with:</p>
+<ul>
+<li>Incorrectly documented values need to be transformed (e.g.&nbsp;typos)</li>
+<li>Redundant or unlinked data rows need to be identified and excluded</li>
+<li>Associated diagnosis entries need to be classified</li>
+<li>…</li>
+</ul>
+<p>We refer to this step as data curation. The good news is that you don’t need to handle this step yourself, as we have already taken care of it for you. Nonetheless, CCPhos is designed to allow a high degree of flexibility and customization. To enable researchers to understand the processing steps the R code of the packages is openly accessible on Github. Furthermore, we are currently working on coherent documentation and tutorial resources.</p>
+<p>The data curation process is triggered by the client-side function <code>ds.CurateData</code> and executed on the servers via the server-side function <code>CurateDataDS</code>. <code>CurateDataDS</code> takes the <code>RawDataSet</code> list object as input and transforms it into a <code>CuratedDataSet</code> list object.</p>
+<p>As a byproduct of the data curation process, we get a report of changes that were made to the data set during curation. The report contains information about the data cleaning, data transformation, and data integration steps that were applied to the data set. The report is stored in the server-side sessions and can be accessed using the <code>ds.GetCurationReport</code> function from the <code>dsCCPhosClient</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply data curation </span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>dsCCPhosClient<span class="sc">::</span><span class="fu">ds.CurateData</span>(<span class="at">DataSources =</span> CCPConnections)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Get Curation reports</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>CurationReports <span class="ot">&lt;-</span> dsCCPhosClient<span class="sc">::</span><span class="fu">ds.GetCurationReport</span>(<span class="at">DataSources =</span> CCPConnections)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Exemplary look at a curation report table</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(CurationReports<span class="sc">$</span>All<span class="sc">$</span>Transformation<span class="sc">$</span>Monitors<span class="sc">$</span>Staging)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(CurationReports<span class="sc">$</span>All<span class="sc">$</span>Transformation<span class="sc">$</span>EligibilityOverviews<span class="sc">$</span>Staging)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(CurationReports<span class="sc">$</span>All<span class="sc">$</span>Transformation<span class="sc">$</span>ValueSetOverviews<span class="sc">$</span>Raw)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Make tables from Curated Data Set directly addressable by unpacking them into R server session</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>Messages <span class="ot">&lt;-</span> <span class="fu">ds.UnpackCuratedDataSet</span>(<span class="at">CuratedDataSetName =</span> <span class="st">"CuratedDataSet"</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">DataSources =</span> CCPConnections)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Take another look at the current server workspace</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>ServerWorkspaceInfo <span class="ot">&lt;-</span> <span class="fu">GetServerWorkspaceInfo</span>(<span class="at">DataSources =</span> CCPConnections)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Overview of all objects in server R sessions</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(ServerWorkspaceInfo<span class="sc">$</span>Overview)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="data-augmentation" class="level3">
+<h3 class="anchored" data-anchor-id="data-augmentation">Data Augmentation</h3>
+<p>With data curation, we obtain a ‘cleaner’ and more harmonized data set that displays the same general structure as the raw data set. We can already analyze this data without encountering any technical barriers. However, with CCPhos we offer further data transformation into an ‘augmented’ data set that is more suitable for meaningful analyses. This data augmentation step features simple ‘data wrangling’ methods but also features engineering steps. The way of executing this processing step is very similar to the one before: we call a function <code>ds.AugmentData</code> from the client which triggers the function <code>AugmentDataDS</code> on the servers. The output consists of a new set of data frames (<code>AugmentedDataSet</code>) which is stored on the servers and can be accessed subsequently.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply data augmentation</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>dsCCPhosClient<span class="sc">::</span><span class="fu">ds.AugmentData</span>(<span class="at">DataSources =</span> CCPConnections)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Make tables from Augmented Data Set directly addressable by unpacking them into R server session</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>dsCCPhosClient<span class="sc">::</span><span class="fu">ds.UnpackAugmentedDataSet</span>(<span class="at">DataSources =</span> CCPConnections)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Take another look at the current server workspace</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>ServerWorkspaceInfo <span class="ot">&lt;-</span> <span class="fu">GetServerWorkspaceInfo</span>(<span class="at">DataSources =</span> CCPConnections)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Overview of all objects in server R sessions</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(ServerWorkspaceInfo<span class="sc">$</span>Overview)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="exemplary-analyses" class="level2">
+<h2 class="anchored" data-anchor-id="exemplary-analyses">Exemplary analyses</h2>
+<p>With the available data frames (<code>ADS_Patients</code>, <code>ADS_Diagnoses</code> and <code>ADS_Events</code>) we can perform some simple exemplary analyses. While you can use the functions provided by CCPhos, you also have the option to utilize<code>dsBase</code> functions (from the DataSHIELD developers), explore functions in community-based packages, or even develop your own DataSHIELD packages.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Useful information about a feature's data</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>FeatureInfo <span class="ot">&lt;-</span> <span class="fu">ds.GetFeatureInfo</span>(<span class="at">DataSources =</span> CCPConnections,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">TableName =</span> <span class="st">"ADS_Patients"</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">FeatureName =</span> <span class="st">"TNM_T"</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(FeatureInfo)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Common parametric and non-parametric statistics</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>SampleStatistics <span class="ot">&lt;-</span> <span class="fu">ds.GetSampleStatistics</span>(<span class="at">DataSources =</span> CCPConnections,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">TableName =</span> <span class="st">"ADS_Patients"</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">MetricFeatureName =</span> <span class="st">"PatientAgeAtDiagnosis"</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(SampleStatistics)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co"># List object containing tables of absolute and relative frequencies</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>Frequencies <span class="ot">&lt;-</span> <span class="fu">ds.GetFrequencyTable</span>(<span class="at">DataSources =</span> CCPConnections,</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">TableName =</span> <span class="st">"ADS_Patients"</span>,</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">FeatureName =</span> <span class="st">"TNM_T"</span>,</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">MaxNumberCategories =</span> <span class="dv">5</span>)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract table of relative frequencies and perform some formatting</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>RelativeFrequencies <span class="ot">&lt;-</span> Frequencies<span class="sc">$</span>RelativeFrequencies <span class="sc">%&gt;%</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="sc">-</span>Site, <span class="sc">~</span> <span class="fu">paste0</span>(<span class="st">"("</span>, <span class="fu">round</span>(.x <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">0</span>), <span class="st">"%)"</span>)))</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(RelativeFrequencies)</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Compile table of absolute and relative frequencies in one</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>TableData <span class="ot">&lt;-</span> Frequencies<span class="sc">$</span>AbsoluteFrequencies <span class="sc">%&gt;%</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), as.character)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">bind_rows</span>(RelativeFrequencies) <span class="sc">%&gt;%</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">group_by</span>(Site) <span class="sc">%&gt;%</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="fu">paste0</span>(.x, <span class="at">collapse =</span> <span class="st">"  "</span>)))</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(TableData)</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Use ggplot2 or any other graphics package for plotting</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>PlotData <span class="ot">&lt;-</span> Frequencies<span class="sc">$</span>AbsoluteFrequencies <span class="sc">%&gt;%</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>                <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>Site,</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>                             <span class="at">names_to =</span> <span class="st">"Value"</span>,</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>                             <span class="at">values_to =</span> <span class="st">"AbsoluteFrequency"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>                <span class="fu">filter</span>(Site <span class="sc">!=</span> <span class="st">"All"</span>)</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>Plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> <span class="fu">as.data.frame</span>(PlotData),</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>               <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Site,</span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>                             <span class="at">x =</span> Value,</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>                             <span class="at">y =</span> AbsoluteFrequency)) <span class="sc">+</span></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>            <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"stack"</span>,</span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>                     <span class="at">stat =</span> <span class="st">"identity"</span>)</span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>Plot</span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a><span class="co"># dsBase functionality can still be used of course:</span></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.mean</span>(<span class="at">x =</span> <span class="st">"ADS_Patients$PatientAgeAtDiagnosis"</span>,</span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>        <span class="at">datasources =</span> CCPConnections)</span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a><span class="co">#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a><span class="co"># Log out from virtual servers</span></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a><span class="co">#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span></span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a>DSI<span class="sc">::</span><span class="fu">datashield.logout</span>(CCPConnections)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="ccphos-app" class="level2">
+<h2 class="anchored" data-anchor-id="ccphos-app">CCPhos App</h2>
+<p>We developed an R Shiny app that mainly serves as a GUI for CCPhos functionality, aiming to facilitate its usage. All CCPhos functions can alternatively be controlled via a traditional R session, as shown throughout this tutorial.</p>
+<p>The CCPhos App is deployed via a regular R package containing an R Shiny app. The following presents the installation and execution.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="at">repo =</span> <span class="st">"BastianReiter/CCPhosApp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To use the virtual infrastructure, you need to provide the test data to the app at startup. For now, feel free to explore the app using the virtual infrastructure. A tutorial will soon be available to guide you through the app.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>TestData <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"data/CCPTestData.rds"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">StartCCPhosApp</span>(<span class="at">CCPTestData =</span> TestData)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

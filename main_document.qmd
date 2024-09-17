@@ -1,0 +1,341 @@
+---
+title: "Explore DataSHIELD and CCPhos on your local machine"
+author: "Bastian Reiter/Daniel Maier"
+format: html
+---
+
+```{css}
+#| echo: false
+p {
+  text-align: justify
+}
+```
+
+## Introduction to the DKTK's CCP and the purpose of CCPhos
+
+The German Cancer Consortium’s (DKTK) Clinical Communication Platform is a federated system of cancer-center-based data warehouses with highly sensitive clinical, patient-centered real-world data (RWD). The CCP’s federated infrastructure guarantees a maximum level of data security and data sovereignty for the participating medical centers. While originally designed to recruit patients for clinical trials, a recently published paper demonstrates the potential of the CCP’s RWD for clinical oncological research.
+
+To establish secure, fast, and scalable federated data analysis, a DataSHIELD-compliant infrastructure has been installed in the CCP network. With CCPhos (The CCP’s approach to handling oncological RWD sets), we present a user-centered, comprehensive solution for the challenges in pre-analytic data preparation (i.e. harmonization, augmentation), exploration, and analysis.
+
+The CCP’s data model forms a subset of the oncologic base data set (oBDS) jointly developed by the Association of German Tumor Centers (Arbeitsgemeinschaft Deutscher Tumorzentren) and the Association of Epidemiologic Cancer Registries in Germany (Gesellschaft der epidemiologischen Krebsregister in Deutschland e.V.). As the data collection is conducted by trained cancer registrars within the participation cancer centers, the data is already in a well harmonized state. However, multiple minor inconsistencies remain, bearing a high risk to cumulate and result in invalid and biased statistical analyses.
+
+Furthermore, using data augmentation through feature engineering and machine learning algorithms, the full potential of the data could be leveraged. Both aspects are addressed by the functionality implemented in the CCPhos framework. The CCPhos suite consists of two closely interlinked R-packages (dsCCPhos and dsCCPhosClient) and a complementary R Shiny application that aims to facilitate their usage for researchers (CCPhosApp).
+
+Incorporating DataSHIELD’s interface technology (DSI package), data processing functions are called from an arbitrary client system within the network and are executed on remote servers of the participating sites. The proposed functionality entails the following key features: 1) Checking of technical requirements on connected servers; 2) Customizable and traceable data transformation; 3) Data curation; 4) Data augmentation and 5) Exploratory analytics.
+
+The overarching goal is to provide researchers with a comprehensive set of tools to obtain valid and conclusive ready-for-analysis data while offering maximum of flexibility and transparency in the way these data are obtained.
+
+## Scope of this tutorial
+
+As stated above, CCPhos entails three packages: dsCCPhos, dsCCPhosClient and CCPhosApp. All of them are functional but still under development. Throughout this tutorial we concentrate on using CCPhos without the app. However, you are encouraged to check out the app, which is meant to facilitate the underlying packages' functionality. Scroll to the end of this page to see how the app can be executed.
+
+The first step in this tutorial is to create a virtual DataSHIELD infrastructure on your local machine. This infrastructure will be used to test DataSHIELD and CCPhos, and is meant to make yourself comfortable with the analytic environment. DataSHIELD consists of multiple server-side sessions that are connected to a client-side session. The client-side session is used to control the server-side sessions and to execute the analysis whereas the server-side sessions are used to store the data and to execute the analysis in a distributed manner. The virtual DataSHIELD infrastructure is created using the 'DSLite' package.
+
+## Install Required Packages
+
+First, we need to install the required packages. The 'devtools' package is required to install packages from GitHub. The 'dsBaseClient' package is required to interact with the DataSHIELD infrastructure. The 'dsCCPhos' and 'dsCCPhosClient' packages are required to perform data curation and data augmentation tasks. The 'CCPhosApp' package is required to use the CCPhos App. The 'DSLite' package is required to set up the virtual DataSHIELD infrastructure.
+
+```{r eval = FALSE}
+
+# Install required packages
+install.packages("devtools")
+install.packages("DSLite")
+
+#install DataSHIELD packages
+install.packages('dsBase', repos=c(getOption('repos'), 'http://cran.datashield.org'), dependencies=TRUE)
+install.packages('dsBaseClient', repos=c(getOption('repos'), 'http://cran.datashield.org'), dependencies=TRUE)
+
+# Install CCPhos packages from GitHub
+devtools::install_github(repo = "Appsilon/shiny.worker")
+devtools::install_github(repo = "BastianReiter/dsCCPhos", ref = "DevDaniel")
+devtools::install_github(repo = "BastianReiter/dsCCPhosClient", ref = "DevDaniel")
+devtools::install_github(repo = "BastianReiter/CCPhosApp")
+
+# Load required packages
+library(dsBase)
+library(dsBaseClient)
+library(dsCCPhos)
+library(dsCCPhosClient)
+library(CCPhosApp)
+library(DSLite)
+
+```
+
+## Initiate virtual CCP infrastructure with provided test data
+
+For the purposes of this tutorial, we will work within a "virtual" CCP environment, initiated by a function contained in the dsCCPhosClient package. Test data will be provided to you and must be stored within a folder named "data" located in this project's root directory.
+
+```{r eval = FALSE}
+
+# Load test data object
+TestData <- readRDS("data/CCPTestData.rds")
+
+# The following function call sets up virtual servers (using functionality of the DSLite-package) 
+# and equips them with evenly distributed data sampled from the 'TestData' object. Using according 
+# arguments you can customize the number of sites and patients per site and even optionally add 
+# custom or community DataSHIELD packages to the virtual servers.
+CCPConnections <- dsCCPhosClient::ConnectToVirtualCCP(CCPTestData = TestData, 
+                                                      NumberOfSites = 3,
+                                                      NumberOfPatientsPerSite = 10000)
+```
+
+## Check Available Methods and Package Status
+
+In the next step, we will check the available methods and the status of the packages on the server-side sessions to ensure that the DataSHIELD infrastructure is set up correctly. To ensure consistency, it is crucial to verify that all required packages are installed on the server-side sessions. Additionally, all methods and packages should be available in the same version across all servers.
+
+The first call (A) is a convenience function within the dsCCPhosClient package. It stores receiving messages from the servers in an object called `Messages`. Via this object access to view available methods and check package status on the server side is possible. The second set of calls (B) is a more 'manual' approach, using functions from the DSI package to achieve the same goal, i.e. checking available methods and package status.
+
+```{r eval = FALSE}
+
+# A) Convenience function within dsCCPhosClient
+Messages <- CheckServerRequirements(DataSources = CCPConnections)
+
+# B) 'Manual' approach featuring functions from DSI package
+
+# List available AGGREGATE functions
+DSI::datashield.method_status(conns = CCPConnections,
+                              type = "aggregate")
+
+# List available ASSIGN functions
+DSI::datashield.method_status(conns = CCPConnections,
+                              type = "assign")
+
+# Get info about installed packages on servers
+DSI::datashield.pkg_status(conns = CCPConnections)
+
+```
+
+## Load Data in Server-Side Sessions
+
+Until now, we have loaded the data set into the client-side session and distributed it to the virtual servers. That means the data set is now accessible from the server side sessions. However, this does not mean the data is already loaded into the server-side sessions. To do so, we need to first ensure the tables from the data repository are accessible within the R session. We will verify that all tables are accessible on all servers and then proceed to load them into the R session. We will consolidate all raw data tables in one list object called `RawDataSet`. This object will be used to access the data in the server-side sessions.
+
+```{r eval = FALSE}
+
+# Convenience function within dsCCPhosClient
+Messages <- LoadRawDataSet(CCPSiteSpecifications = NULL,
+                           DataSources = CCPConnections)
+
+```
+
+## Ready to Work with DataSHIELD
+
+Now that we have set up the virtual DataSHIELD infrastructure and loaded the test data set into the server-side sessions, we are ready to work with DataSHIELD. We can use specific DataSHIELD functions (from the `dsBaseClient`-package)  to verify that everything is working correctly. To illustrate, we can pursue checking the names of the data sets, the column names of the data sets, the class of the data sets, and the class of the columns in the data sets.
+
+It is important to know that the data set is stored in a list object called `RawDataSet`. This object contains all data frames that are part of the data set. The data frames are stored in the list object in the same way as they are stored in the data repository. For example, the data frame `RDS_Patient` is stored in the list object as `RawDataSet$RDS_Patient`, while the data frame `RDS_Diagnosis` is stored in the list object as `RawDataSet$RDS_Diagnosis`. 
+In the following, we will use several dsBaseClient functions to check if everything is working correctly.
+
+
+```{r eval = FALSE}
+# Let's use some functions from the dsBaseClient-package to check if everything is working
+
+# Check the names of all elements (data frames) within list 'RawDataSet'
+dsBaseClient::ds.names("RawDataSet", datasources = CCPConnections)
+
+# Check the column names of data frame 'RDS_Patient' within list 'RawDataSet'
+dsBaseClient::ds.colnames("RawDataSet$RDS_Patient", datasources = CCPConnections)
+
+# Check the class of the 'RDS_Patient' data frame
+dsBaseClient::ds.class("RawDataSet$RDS_Patient", datasources = CCPConnections)
+
+# Check the class of the column 'vitalstatus' in 'RDS_Patient'
+dsBaseClient::ds.class("RawDataSet$RDS_Patient$vitalstatus", datasources = CCPConnections)
+
+# Check the distribution of 'geschlecht' in 'RDS_Patient'
+dsBaseClient::ds.table("RawDataSet$RDS_Patient$geschlecht", datasources = CCPConnections)
+
+# Check the distribution of 'vitalstatus' in 'RDS_Patient'
+dsBaseClient::ds.table("RawDataSet$RDS_Patient$vitalstatus", datasources = CCPConnections)
+
+```
+
+## Get Overview of Objects in Server Workspaces
+
+Now that the data is loaded into the server-side sessions, we can get an overview of the objects in the server workspaces. We can use the `GetServerWorkspaceInfo` function from the `dsCCPhosClient`-package to get an overview of the objects in the server workspaces. The function returns a list object that contains information about all objects in the server workspaces. Most importantly, the `overview` data frame in the list contains information about the object name, the object type, the object size, the object class, and the object attributes.
+
+For individual objects, we can use the `GetObjectMetaData` function from the `dsCCPhosClient`-package to get detailed meta data of a particular object. The function returns a list object that contains information about the object's structure, the object's data types, the object's value sets, and the object's value set sizes.
+
+```{r eval = FALSE}
+
+# Collect comprehensive information about all workspace objects
+# !!D: deprecated function; 
+ServerWorkspaceInfo <- dsCCPhosClient::GetServerWorkspaceInfo(DataSources = CCPConnections)
+
+# Overview of all objects in server R sessions
+View(ServerWorkspaceInfo$Overview)
+
+# Detailed meta data of a particular object (also part of ServerWorkspaceInfo)
+ObjectMetaData <- ds.GetObjectMetaData(ObjectName = "RDS_Patient",
+                                       DataSources = CCPConnections)
+
+# Explore Object meta data: Structural overview
+View(ObjectMetaData$FirstEligible$Structure)
+
+# Get type of feature 'geburtsdatum'
+ObjectMetaData$FirstEligible$DataTypes["geburtsdatum"]
+
+```
+
+## Performing data (pre-)processing tasks with CCPhos
+
+### Data curation
+
+The provided test data simulates RWD from tumor documentations that are part of the CCP. Consequently, it also features common structural and semantic inconsistencies that require processing to reduce potential bias and enable meaningful and correct analyses. In addition, syntactic and semantic data harmonization tasks need to be performed and monitored at the same time to prevent processing-induced bias. CCPhos provides functionality to meet these challenges.
+
+Here are some examples of inconsistencies listed that have to be dealt with:
+
+-   Incorrectly documented values need to be transformed (e.g. typos)
+-   Redundant or unlinked data rows need to be identified and excluded
+-   Associated diagnosis entries need to be classified
+-   ...
+
+We refer to this step as data curation. The good news is that you don’t need to handle this step yourself, as we have already taken care of it for you. Nonetheless, CCPhos is designed to allow a high degree of flexibility and customization. To enable researchers to understand the processing steps the R code of the packages is openly accessible on Github. Furthermore, we are currently working on coherent documentation and tutorial resources.
+
+The data curation process is triggered by the client-side function `ds.CurateData` and executed on the servers via the server-side function `CurateDataDS`. `CurateDataDS` takes the `RawDataSet` list object as input and transforms it into a `CuratedDataSet` list object.
+
+As a byproduct of the data curation process, we get a report of changes that were made to the data set during curation. The report contains information about the data cleaning, data transformation, and data integration steps that were applied to the data set. The report is stored in the server-side sessions and can be accessed using the `ds.GetCurationReport` function from the `dsCCPhosClient` package.
+
+```{r eval = FALSE}
+
+# Apply data curation 
+dsCCPhosClient::ds.CurateData(DataSources = CCPConnections)
+
+# Get Curation reports
+CurationReports <- dsCCPhosClient::ds.GetCurationReport(DataSources = CCPConnections)
+
+# Exemplary look at a curation report table
+View(CurationReports$All$Transformation$Monitors$Staging)
+View(CurationReports$All$Transformation$EligibilityOverviews$Staging)
+View(CurationReports$All$Transformation$ValueSetOverviews$Raw)
+
+# Make tables from Curated Data Set directly addressable by unpacking them into R server session
+Messages <- ds.UnpackCuratedDataSet(CuratedDataSetName = "CuratedDataSet",
+                                    DataSources = CCPConnections)
+
+# Take another look at the current server workspace
+ServerWorkspaceInfo <- GetServerWorkspaceInfo(DataSources = CCPConnections)
+
+# Overview of all objects in server R sessions
+View(ServerWorkspaceInfo$Overview)
+
+```
+
+### Data Augmentation
+
+With data curation, we obtain a 'cleaner' and more harmonized data set that displays the same general structure as the raw data set. We can already analyze this data without encountering any technical barriers. However, with CCPhos we offer further data transformation into an 'augmented' data set that is more suitable for meaningful analyses. This data augmentation step features simple 'data wrangling' methods but also features engineering steps. The way of executing this processing step is very similar to the one before: we call a function `ds.AugmentData` from the client which triggers the function `AugmentDataDS` on the servers. The output consists of a new set of data frames (`AugmentedDataSet`) which is stored on the servers and can be accessed subsequently.
+
+```{r eval = FALSE}
+
+# Apply data augmentation
+dsCCPhosClient::ds.AugmentData(DataSources = CCPConnections)
+
+# Make tables from Augmented Data Set directly addressable by unpacking them into R server session
+dsCCPhosClient::ds.UnpackAugmentedDataSet(DataSources = CCPConnections)
+
+# Take another look at the current server workspace
+ServerWorkspaceInfo <- GetServerWorkspaceInfo(DataSources = CCPConnections)
+
+# Overview of all objects in server R sessions
+View(ServerWorkspaceInfo$Overview)
+
+```
+
+## Exemplary analyses
+
+With the available data frames (`ADS_Patients`, `ADS_Diagnoses` and `ADS_Events`) we can perform some simple exemplary analyses. While you can use the functions provided by CCPhos, you also have the option to utilize`dsBase` functions (from the DataSHIELD developers), explore functions in community-based packages, or even develop your own DataSHIELD packages.
+
+```{r eval = FALSE}
+
+# Useful information about a feature's data
+FeatureInfo <- ds.GetFeatureInfo(DataSources = CCPConnections,
+                                 TableName = "ADS_Patients",
+                                 FeatureName = "TNM_T")
+
+View(FeatureInfo)
+
+
+# Common parametric and non-parametric statistics
+SampleStatistics <- ds.GetSampleStatistics(DataSources = CCPConnections,
+                                           TableName = "ADS_Patients",
+                                           MetricFeatureName = "PatientAgeAtDiagnosis")
+
+View(SampleStatistics)
+
+
+# List object containing tables of absolute and relative frequencies
+Frequencies <- ds.GetFrequencyTable(DataSources = CCPConnections,
+                                    TableName = "ADS_Patients",
+                                    FeatureName = "TNM_T",
+                                    MaxNumberCategories = 5)
+
+# Extract table of relative frequencies and perform some formatting
+RelativeFrequencies <- Frequencies$RelativeFrequencies %>%
+                            mutate(across(-Site, ~ paste0("(", round(.x * 100, 0), "%)")))
+
+View(RelativeFrequencies)
+
+
+# Compile table of absolute and relative frequencies in one
+TableData <- Frequencies$AbsoluteFrequencies %>%
+                  mutate(across(everything(), as.character)) %>%
+                  bind_rows(RelativeFrequencies) %>%
+                  group_by(Site) %>%
+                      summarize(across(everything(), ~ paste0(.x, collapse = "  ")))
+
+View(TableData)
+
+
+# Use ggplot2 or any other graphics package for plotting
+library(ggplot2)
+
+PlotData <- Frequencies$AbsoluteFrequencies %>%
+                pivot_longer(cols = -Site,
+                             names_to = "Value",
+                             values_to = "AbsoluteFrequency") %>%
+                filter(Site != "All")
+
+Plot <- ggplot(data = as.data.frame(PlotData),
+               mapping = aes(fill = Site,
+                             x = Value,
+                             y = AbsoluteFrequency)) +
+            geom_bar(position = "stack",
+                     stat = "identity")
+
+Plot
+
+
+# dsBase functionality can still be used of course:
+ds.mean(x = "ADS_Patients$PatientAgeAtDiagnosis",
+        datasources = CCPConnections)
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Log out from virtual servers
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+DSI::datashield.logout(CCPConnections)
+
+```
+
+## CCPhos App
+
+We developed an R Shiny app that mainly serves as a GUI for CCPhos functionality, aiming to facilitate its usage. All CCPhos functions can alternatively be controlled via a traditional R session, as shown throughout this tutorial.
+
+The CCPhos App is deployed via a regular R package containing an R Shiny app. The following presents the installation and execution.
+
+```{r eval = FALSE}
+
+devtools::install_github(repo = "BastianReiter/CCPhosApp")
+
+```
+
+
+To use the virtual infrastructure, you need to provide the test data to the app at startup.
+For now, feel free to explore the app using the virtual infrastructure. A tutorial will soon be available to guide you through the app.
+
+```{r eval = FALSE}
+
+TestData <- readRDS("data/CCPTestData.rds")
+
+StartCCPhosApp(CCPTestData = TestData)
+
+```
